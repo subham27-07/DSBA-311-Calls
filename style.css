@@ -1,0 +1,91 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	font-family: sans-serif;
+	margin: 0;
+}
+
+#map {
+	height: 100%;
+	flex: 1;
+}
+
+#sidebar {
+	border-left: 1px solid #ccc;
+	display: flex;
+	flex-direction: column;
+	width: 33%;
+}
+
+#sidebar > * {
+	padding: 1em;
+}
+
+#sidebar > * + * {
+	border-top: 1px solid #ccc;
+	margin-top: 1em;
+}
+
+select {
+	max-width: 100%;
+}
+
+.color-legend {
+	border: 1px solid #ccc;
+	height: 1em;
+}
+
+.legend-values {
+	display: flex;
+}
+
+.legend-values span {
+	flex: 1;
+}
+
+.legend-values :last-child {
+	text-align: right;
+}
+
+#tract-info {
+	flex: 1;
+	overflow: auto;
+}
+
+h1 {
+	font-size: 150%;
+	margin-top: 0;
+}
+
+h2 {
+	font-size: 100%;
+	margin-top: 2em;
+}
+
+dl {
+	display: grid;
+	grid-template-columns: auto auto;
+}
+
+dt {
+	grid-column: 1;
+}
+
+dd {
+	grid-column: 2;
+	margin: 0;
+	text-align: right;
+}
+
+.note {
+	color: #666;
+	font-style: italic;
+}
+
+path:hover {
+	stroke: #000;
+	stroke-width: 3px;
+}

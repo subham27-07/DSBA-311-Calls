@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mecklenburg 311 Requests</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+    <script src="https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
+    <script src="https://unpkg.com/petite-vue"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="sidebar">
+        <div id="tract-info">
+            <template v-if="currentTract">
+                <h1>Census Tract {{ currentTract.name }}</h1>
+                <dl>
+                    <dt>Total Service Requests</dt>
+                    <dd>{{ formatNumber(currentTract.requestCount) }}</dd>
+
+                    <dt>Total Population</dt>
+                    <dd>{{ formatNumber(currentTract.population) }}</dd>
+
+                    <dt>Service Requests per Capita</dt>
+                    <dd>{{ formatNumber(currentTract.requestCount / currentTract.population, 2) }}</dd>
+                </dl>
+                
+                <h2>Racial Breakdown</h2>
+                <dl>
+                    <template v-for="race in raceOptions">
+                        <dt>{{ race }}</dt>
+                        <dd>{{ formatPercent(currentTract[race] / currentTract.population, 2) }}</dd>
+                    </template>
+                </dl>
+                <p class="note">Values may not add up to 100% because individuals can identify as more than one race.</p>
+
+                <h2>Top Service Request Types</h2>
+                <dl>
+                    <template v-for="requestType in currentTract.topRequestTypes">
+                        <dt>{{ requestType.label }}</dt>
+                        <dd>{{ formatPercent(requestType.count / currentTract.requestCount, 2) }}</dd>
+                    </template>
+                </dl>
+            </template>
+            <template v-else>
+                <h1>Tract Details</h1>
+                <p class="note">Hover over a tract for more info</p>
+            </template>
+        </div>
+        <form>
+            <h1>Colors</h1>
+            <p>Color tracts based on:</p>
+            <select v-model="currentShading" @change="shadingChanged">
+                <option v-for="option in shadingOptions" :value="option">{{ option.name }}</option>
+            </select>
+        </form>
+        <div id="legend">
+            <h1>Legend</h1>
+            <div v-if="currentShading" class="color-legend" :style="{background: `linear-gradient(to right, hsl(${currentShading.hue}, 100%, 100%), hsl(${currentShading.hue}, 100%, 50%))`}"></div>
+            <div class="legend-values">
+                <span>0{{ currentShading.isPercent ? '.00%' : '' }}</span>
+                <span>{{ currentShading.isPercent ? formatPercent(currentShading.max, 2) : formatNumber(currentShading.max) }}</span>
+            </div>
+        </div>
+    </div>
+    <script src="map.js"></script>
+</body>
+</html>
